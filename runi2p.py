@@ -1,10 +1,13 @@
 #!/usr/bin/env jython 
 from router import i2p_router
 import logging
+import ui
 
 def main():
-    logging.basicConfig(level=logging.INFO)
-    r = i2p_router('/tmp/i2p')
+    fmt = '%(asctime)s\t-\t%(filename)s:%(lineno)-d\t-\t%(levelname)s\t%(name)s:\t%(message)s'
+    logging.basicConfig(level=logging.INFO,format=fmt)
+    r = i2p_router()
+    ui.LogUI(r).run()
     r.start()
   
 
