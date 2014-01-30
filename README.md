@@ -3,7 +3,7 @@
 ### Dependancies
 
 * Jython 2.7 ( http://jython.org/downloads.html )
-* I2P
+* I2P ( https://geti2p.net/download )
 
 ### To Run
 
