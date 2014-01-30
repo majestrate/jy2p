@@ -19,6 +19,7 @@ class i2p_router:
 
         self._router_status = 'Initialize'
         self._load_config(root_dir,props)
+        self._router = None
 
     def bandwidth(self):
         bwl = self._router.context.bandwidthLimiter()
@@ -128,3 +129,5 @@ class i2p_router:
     def restart(self):
         util.fork(self.blocking_restart)
 
+    def router(self):
+        return self._router

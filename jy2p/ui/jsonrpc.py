@@ -102,8 +102,20 @@ class JSONRPC:
     def get_method(self,method):
         return getattr(self,'_rpc_'+method)
 
+    def _rpc_router_kill(self, *args, **kwds):
+        self.router.kill()
+        return 1
+
     def _rpc_router_stop(self,*args, **kwds):
         self.router.stop()
+        return 1
+
+    def _rpc_router_start(self, *args, **kwds):
+        self.router.start()
+        return 1
+
+    def _rpc_router_restart(self, *args, **kwds):
+        self.router.restart()
         return 1
 
     def _rpc_router_alive(self, *args, **kwds):
@@ -116,10 +128,14 @@ class JSONRPC:
         return self.router.status
 
     def _rpc_router_network_status_code(self, *args, **kwds):
-        return self.router.network
+        return self.router.network_code
     
     def _rpc_router_network_status(self, *args, **kwds):
-        return self.router.network_code
+        return self.router.network
+
+    def _rpc_router_count_peers(self, *args, **kwds):
+        return self.router.count_connected_peers()
+
 
 
 class UI(GenericUI):
