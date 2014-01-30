@@ -1,6 +1,6 @@
-import util
+from jy2p import util
 
-class _generic_ui(object):
+class GenericUI(object):
     
     def __init__(self,router):
         self.router = router
@@ -15,27 +15,15 @@ class _generic_ui(object):
     def router_status(self):
         return self.router.status
         
-
     def blocking_run(self):
         pass
 
     def run(self):
+        util.inject_logger(self)
         util.fork(self.blocking_run)
 
-class LogUI(_generic_ui):
-
-    def blocking_run(self):
-        util.inject_logger(self)
+    def wait_for_router(self):
         while not self.router.running:
             self._log.info('Router running: %s' % self.router.running)
             self._log.info('Waiting for router to be running, Status: %s' % self.router.status)
             util.sleep(1)
-        self._log.info('Router status: %s' % self.router.status)
-        sleep_time = 1
-        while self.router.running:
-           bw = self.router.bandwidth(sleep_time)
-           bw /= 1024 * 8.
-           bw = int(bw)
-           if bw > 0:
-               self._log.info('bandwidth: %s KBps' % bw ) 
-           util.sleep(sleep_time)

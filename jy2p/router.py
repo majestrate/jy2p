@@ -1,6 +1,14 @@
-from net.i2p.router import Router
+from net.i2p.router import Router, CommSystemFacade
 import util
 import os
+
+
+class TunnelBuilder:
+
+    def __init__(self,router):
+        self._router = router
+
+    
 
 class i2p_router:
     
@@ -12,17 +20,28 @@ class i2p_router:
         self._router_status = 'Initialize'
         self._load_config(root_dir,props)
 
-    def bandwidth(self,sec=1):
-        if not isinstance(sec,int):
-            sec = int(sec)
-        if sec >= 300:
-            return self._router.get5mRate()
-        elif sec >= 60:
-            return self._router.get1mRate()
-        elif sec >= 15:
-            return self._router.get15sRate()
-        if sec >= 1:
-            return self._router.get1sRate()
+    def bandwidth(self):
+        bwl = self._router.context.bandwidthLimiter()
+        return bwl.getReceiveBps() , bwl.getSendBps()
+        
+    @property
+    def network_code(self):
+        comsys = self._router.context.commSystem()
+        return comsys.getReachabilityStatus()
+        
+
+    @property
+    def network(self):
+        stats = {
+            CommSystemFacade.STATUS_OK : 'Okay',
+            CommSystemFacade.STATUS_DIFFERENT : 'NAT Error',
+            CommSystemFacade.STATUS_REJECT_UNSOLICITED : 'Firewalled',
+            CommSystemFacade.STATUS_DISCONNECTED : 'Disconnected'
+        }
+        status = self.network_code
+        if status in stats:
+            return stats[status]
+        return 'Undefined'
 
     @property
     def status(self):

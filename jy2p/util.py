@@ -4,11 +4,13 @@ import logging
 import time
 import threading
 
-def inject_logger(obj):
+def inject_logger(obj,name=None):
     """
     inject a logger into an object 
     """
-    obj._log = logging.getLogger(obj.__class__.__name__)
+    if name is None:
+        name = obj.__class__.__name__
+    obj._log = logging.getLogger(name)
     return obj
 
 def properties(props_dict):
