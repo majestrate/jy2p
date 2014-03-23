@@ -21,13 +21,29 @@ class i2p_router:
         self._load_config(root_dir,props)
         self._router = None
 
+    
+    @property
+    def uptime(self):
+        return self._router.uptime
+
+   
+    def started_at(self):
+        return self._router.whenStarted
+
+    def count_peers(self):
+        peers = 0
+
+        return peers
+
+    @property
     def bandwidth(self):
-        bwl = self._router.context.bandwidthLimiter()
-        return bwl.getReceiveBps() , bwl.getSendBps()
+        #bwl = self._router.context.bandwidthLimiter()
+        return self._router.get1sRateIn(), self._router.get1sRate()
+        #return bwl.getReceiveBps() , bwl.getSendBps()
         
     @property
     def network_code(self):
-        comsys = self._router.context.commSystem()
+        comsys = self.context().commSystem()
         return comsys.getReachabilityStatus()
         
 
@@ -42,7 +58,7 @@ class i2p_router:
         status = self.network_code
         if status in stats:
             return stats[status]
-        return 'Undefined'
+        return 'Unknown/Testing'
 
     @property
     def status(self):
@@ -121,13 +137,15 @@ class i2p_router:
 
 
     def blocking_restart(self):
-        if self._status == 'Running':
-            self._status('Restarting')
-            self._router.restart()
-            self._wait_for_alive()
+        self._status('Restarting')
+        self._router.restart()
+        self._wait_for_alive()
 
     def restart(self):
         util.fork(self.blocking_restart)
 
     def router(self):
         return self._router
+
+    def context(self):
+        return self.router().context

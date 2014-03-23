@@ -9,4 +9,4 @@ for jar in $I2P/libs/*.jar ; do
     jp="$jar:$jp"
 done
 
-JYTHONPATH="$jp" ./runi2p.py
+JYTHONPATH="$jp" jython runi2p.py

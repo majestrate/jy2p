@@ -60,19 +60,16 @@ def make_request_handler(router, rpc_class):
                                 try:
                                     if isinstance(params, dict):
                                         j['result'] = rpc_method(**params)
-                                        j['id'] = self.json['id']
                                     elif isinstance(params, list):
                                         j['result'] = rpc_method(*params)
-                                        j['id'] = self.json['id']
                                     else:
                                         raise Exception()
                                 except Exception as e:
                                     self._log.error(e)
                                     j = dict(self._json_internal_error)
                             else:
-                                j = dict(self._json_no_such_method)
-
-                                    
+                                j = dict(self._json_no_such_method)                                    
+                            j['id'] = self.json['id']
                         else:
                             j = dict(self._json_invalid_request)
                     else:
@@ -102,41 +99,61 @@ class JSONRPC:
     def get_method(self,method):
         return getattr(self,'_rpc_'+method)
 
-    def _rpc_router_kill(self, *args, **kwds):
+    def _rpc_kill(self, *args, **kwds):
         self.router.kill()
         return 1
 
-    def _rpc_router_stop(self,*args, **kwds):
+    def _rpc_stop(self,*args, **kwds):
         self.router.stop()
         return 1
 
-    def _rpc_router_start(self, *args, **kwds):
+    def _rpc_start(self, *args, **kwds):
         self.router.start()
         return 1
 
-    def _rpc_router_restart(self, *args, **kwds):
+    def _rpc_restart(self, *args, **kwds):
         self.router.restart()
         return 1
 
-    def _rpc_router_alive(self, *args, **kwds):
+    def _rpc_start_time(self, *args, **kwds):
+        return self.router.started_at()
+        
+    def _rpc_uptime(self, *args, **kwds):
+        return self.router.uptime
+
+    def _rpc_alive(self, *args, **kwds):
         return self.router.alive
         
-    def _rpc_router_running(self, *args, **kwds):
+    def _rpc_running(self, *args, **kwds):
         return self.router.running 
 
-    def _rpc_router_status(self, *args, **kwds):
+    def _rpc_status(self, *args, **kwds):
         return self.router.status
 
-    def _rpc_router_network_status_code(self, *args, **kwds):
+    def _rpc_network_status_code(self, *args, **kwds):
         return self.router.network_code
     
-    def _rpc_router_network_status(self, *args, **kwds):
+    def _rpc_network_status(self, *args, **kwds):
         return self.router.network
 
-    def _rpc_router_count_peers(self, *args, **kwds):
-        return self.router.count_connected_peers()
+    def _rpc_active_peers(self, *args, **kwds):
+        return self.router.context().commSystem().countActivePeers()
 
+    def _rpc_bandwidth(self, *args, **kwds):
+        recv, send = self.router.bandwidth
+        return [int(recv), int(send)]
 
+    def _rpc_get_participating_count(self, *args, **kwds):
+        return self.router.context().tunnelManager().participatingCount
+    
+    def _rpc_get_tunnel_count(self, *args, **kwds):
+        ls = []
+        self.router.context().tunnelManager().listPools(ls)
+        count = 0
+        for pool in ls:
+            count += len(pool.listTunnels())
+        return count
+        
 
 class UI(GenericUI):
 

@@ -4,6 +4,9 @@ import logging
 import time
 import threading
 
+def now():
+    return int(time.time())
+
 def inject_logger(obj,name=None):
     """
     inject a logger into an object 
