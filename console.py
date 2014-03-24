@@ -19,7 +19,7 @@ def bw_str(v):
             return '%d MB/s' % v
         return '%d KB/s' % v
     return '%d B/s' % v
-        
+
 
 def paint():
     mw.clear()
@@ -32,13 +32,13 @@ def paint():
     tunnels = i2p.get_tunnel_count()
     uptime = i2p.uptime()
     top = 3
-    
+
     mw.addstr(1,3, 'I2P Router Console')
 
-    mw.addstr(top,3, 'Router: '+status)  
+    mw.addstr(top,3, 'Router: '+status)
     mw.addstr(top, 30, 'Uptime: %d seconds' % int(uptime / 1000) )
     mw.addstr(top+1,3, 'Network: '+ net)
-    
+
     ups = '=' * ( up / 1024 )
 
     dwns = '=' * ( down / 1024 )
@@ -50,7 +50,7 @@ def paint():
     mw.addstr(top+3,3,'Up')
     mw.addstr(top+4,3,bw_str(up))
     mw.addstr(top+3,9,ups)
-    
+
     mw.addstr(top+6,3,'Down')
     mw.addstr(top+7,3,bw_str(down))
     mw.addstr(top+6,9,dwns)
