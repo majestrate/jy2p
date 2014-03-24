@@ -8,25 +8,25 @@ class TunnelBuilder:
     def __init__(self,router):
         self._router = router
 
-    
+
 
 class i2p_router:
-    
-    def __init__(self,root_dir=None,props={}):
+
+    def __init__(self,root_dir,config_dir=None,props={}):
         util.inject_logger(self)
-        if root_dir is None:
-            root_dir = os.path.join(os.environ['HOME'],'.i2p')
+        if config_dir is None:
+            config_dir = os.path.join(os.environ['HOME'],'.i2p')
 
         self._router_status = 'Initialize'
-        self._load_config(root_dir,props)
+        self._load_config(root_dir,config_dir,props)
         self._router = None
 
-    
+
     @property
     def uptime(self):
         return self._router.uptime
 
-   
+
     def started_at(self):
         return self._router.whenStarted
 
@@ -40,12 +40,12 @@ class i2p_router:
         #bwl = self._router.context.bandwidthLimiter()
         return self._router.get1sRateIn(), self._router.get1sRate()
         #return bwl.getReceiveBps() , bwl.getSendBps()
-        
+
     @property
     def network_code(self):
         comsys = self.context().commSystem()
         return comsys.getReachabilityStatus()
-        
+
 
     @property
     def network(self):
@@ -74,7 +74,7 @@ class i2p_router:
     @property
     def alive(self):
         return self._router.isAlive()
-    
+
     @property
     def running(self):
         return self.status == 'Running'
@@ -82,7 +82,7 @@ class i2p_router:
     @property
     def done(self):
         return self.status == 'Done'
-    
+
     def _wait_for_stop(self):
         self._wait(lambda : self.alive)
         self._status('Done')
@@ -90,16 +90,17 @@ class i2p_router:
     def _wait_for_alive(self):
         self._wait(lambda : not self.alive)
         self._status('Running')
-        
+
     def _wait(self,hook):
         while hook():
             util.sleep()
 
-    def _load_config(self,root_dir,props):
+    def _load_config(self,root_dir,config_dir,props):
         self._status('LoadConfig')
-        self._config_path = os.path.join(root_dir,'router.config') 
+        self._config_path = os.path.join(config_dir,'router.config')
         d = {
-            'i2p.dir.config' : root_dir,
+            'i2p.dir.base' : root_dir,
+            'i2p.dir.config' : config_dir,
             'i2cp.disableInterface' : True
         }
 
@@ -118,7 +119,7 @@ class i2p_router:
         if self.status == 'Running':
             self._router.shutdown(Router.EXIT_HARD)
             self._wait_for_stop()
-    
+
     def kill(self):
         util.fork(self.blocking_kill)
 
@@ -131,7 +132,7 @@ class i2p_router:
         self._router.shutdownGracefully()
         self._status('GracefulStop')
         self._wait_for_stop()
-        
+
     def stop(self):
         util.fork(self.blocking_stop)
 

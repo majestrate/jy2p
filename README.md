@@ -11,4 +11,9 @@
     cd jy2p
     ./jy2p.sh /path/to/i2p/installation/directory/
 
+To open the Jython interpreter after starting the router:
 
+    ./jy2p.sh -i /path/to/i2p/installation/directory/
+
+The router will be accessible via the `r` variable. The interpreter will close
+when the router shuts down.
