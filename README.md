@@ -9,11 +9,12 @@
 
     git clone https://github.com/majestrate/jy2p/
     cd jy2p
-    ./jy2p.sh /path/to/i2p/installation/directory/
+    ./jy2p.sh [OPTION]... /path/to/i2p/installation/directory/
 
-To open the Jython interpreter after starting the router:
+#### Options
 
-    ./jy2p.sh -i /path/to/i2p/installation/directory/
-
-The router will be accessible via the `r` variable. The interpreter will close
-when the router shuts down.
+* `-i` Open the Jython interpreter after starting the router. The router will
+  be accessible via the `r` variable. The interpreter will close when the
+  router shuts down.
+* `-p` Add libraries from the local Python 2 installation to the Jython path.
+  Libraries in the `dist-packages` and `site-packages` folders are added.
