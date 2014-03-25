@@ -29,6 +29,7 @@ for jar in $I2P/lib/*.jar ; do
     jp="$jar:$jp"
 done
 
+jyopts="$jyopts -J-cp $jp"
 jyopts="$jyopts -J-Djava.library.path=${I2P}:${I2P}/lib"
 
 JYTHONPATH="$jp" I2P="$I2P" jython $jyopts runi2p.py
