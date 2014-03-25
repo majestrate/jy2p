@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+jp=""
 jyopts=""
-while getopts ":i" opt; do
+while getopts ":ip" opt; do
     case $opt in
       i)
         jyopts="$jyopts -i"
+        ;;
+      p)
+        jp=$(python2 -c 'import sys; print(":".join([x for x in sys.path if "dist-packages" in x or "site-packages" in x]))')
         ;;
       \?)
         echo "Invalid option: -$OPTARG" >&2
@@ -24,12 +28,12 @@ if [ "$I2P" == "" ] ; then
     exit 2
 fi
 
-jp="$JYTHONPATH"
+cp=""
 for jar in $I2P/lib/*.jar ; do
-    jp="$jar:$jp"
+    cp="$jar:$cp"
 done
 
-jyopts="$jyopts -J-cp $jp"
+jyopts="$jyopts -J-cp $cp"
 jyopts="$jyopts -J-Djava.library.path=${I2P}:${I2P}/lib"
 
-JYTHONPATH="$jp" I2P="$I2P" jython $jyopts runi2p.py
+JYTHONPATH="$JYTHONPATH:$jp" I2P="$I2P" jython $jyopts runi2p.py
