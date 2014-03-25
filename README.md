@@ -1,4 +1,4 @@
-## Jy2P -- (Toy) Jython I2P Wrapper
+## Jy2P -- Jython I2P Wrapper
 
 ### Dependancies
 
